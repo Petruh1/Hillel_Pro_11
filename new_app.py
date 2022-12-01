@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+
 app = Flask(__name__)
 import sqlite3
 
@@ -16,17 +17,19 @@ def login_user():
 def logout_user():
     return "<p>Logout!</p>"
 
+
 @app.route("/register", methods=["GET", "POST"])
 def register_user():
     return "Registration form"
+
 
 @app.route("/user_page", methods=["GET"])
 def user_access():
     return "More functions"
 
+
 @app.route("/currency", methods=["GET", "POST"])
 def currency_converter():
-
     con = sqlite3.connect("currency.db")
     cur = con.cursor()
     if request.method == 'POST':
@@ -34,17 +37,21 @@ def currency_converter():
         user_currency_1 = request.form["currency_1"]
         user_currency_2 = request.form["currency_2"]
         user_date = request.form["date"]
-        res_1 = cur.execute(f'SELECT buy_rate, sale_rate FROM currency WHERE bank="{user_bank}" and date_exchange="{user_date}" and currency="{user_currency_1}"')
+        res_1 = cur.execute(
+            f'SELECT buy_rate, sale_rate FROM currency WHERE bank="{user_bank}" and date_exchange="{user_date}" and currency="{user_currency_1}"')
         buy_rate_1, sale_rate_1 = res_1.fetchone()
-        res_2 = cur.execute(f'SELECT buy_rate, sale_rate FROM currency WHERE bank="{user_bank}" and date_exchange="{user_date}" and currency="{user_currency_2}"')
+        res_2 = cur.execute(
+            f'SELECT buy_rate, sale_rate FROM currency WHERE bank="{user_bank}" and date_exchange="{user_date}" and currency="{user_currency_2}"')
         buy_rate_2, sale_rate_2 = res_2.fetchone()
 
         cur_exchange_buy = buy_rate_2 / buy_rate_1
         cur_exchange_sale = sale_rate_2 / sale_rate_1
         return render_template("data_form.html", cur_exchange_buy=cur_exchange_buy,
-                               user_currency_1=user_currency_1, user_currency_2=user_currency_2, cur_exchange_sale=cur_exchange_sale)
+                               user_currency_1=user_currency_1, user_currency_2=user_currency_2,
+                               cur_exchange_sale=cur_exchange_sale)
     else:
         return render_template("data_form.html")
+
 
 if __name__ == "__main__":
     app.run()
