@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template
-
+from celery_working import add
 
 app = Flask(__name__)
 from database_function import DataBaseManager, generate_data
@@ -16,6 +16,7 @@ def login_user():
 
 @app.route("/logout", methods=["GET"])
 def logout_user():
+    add.apply_async(args=(4, 5))
     return "<p>Logout!</p>"
 
 
